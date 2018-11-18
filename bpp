@@ -15,7 +15,27 @@ end
 
 class String
 
-  @@keywords = "end for next data input# input dim read let goto run if
+  @@keywords = "abs active adc advert_enabled advert analog append
+                    attach auth autorun avdd name new next notify no
+                    battery bonding_enabled btpeek btpoke off onconnect
+                    ondiscover onread onwrite on open output characteristic
+                    close config custom p0 p1 p2 passcode pinmode power pow
+                    print pulldown pullup pulse * delay detach dev_address
+                    dim duplicates ^ + elif else end eof external read
+                    reboot reference rem repeat resolution return rising
+                    rnd run rxgain falling false for scan serial service
+                    slave_latency slave spi step stop - gatt general
+                    gen_disc_adv_int_max gen_disc_adv_int_min
+                    gen_disc_adv_min gosub goto temp timeout_multiplier
+                    timeout timer to transfer true truncate txpower != high
+                    | // / << <= <> < i2c if indicate input internal interrupt
+                    0x == = wait wire writenorsp write >= >> > % len limited
+                    lim_adv_timeout lim_disc_adv_int_max lim_disc_adv_int_min
+                    list low lsb yes & master max_conn_interval mem millis
+                    min_conn_interval more msb".split(/\s+/)
+
+
+  @@xx_keywords = "end for next data input# input dim read let goto run if
                 restore gosub return rem stop on wait load save verify def
                 poke print# print cont list clr cmd sys open close get new
                 tab( to fn spc( then not step + - * / ^ and or > = < sgn

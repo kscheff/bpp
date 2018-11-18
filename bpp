@@ -272,7 +272,7 @@ class Code < String
   include Node
 
   def to_s
-    gsub(/\s+/, "")
+    gsub(/\s+/, " ")
   end
 end
 
@@ -331,29 +331,24 @@ class Line
         self << Literal.new(match["string"])
         @text = match.post_match
         
-      elsif (match = /^(?<code>then\s*(go(sub|to))|then|go(sub|to))\s*(?<labels>[\w\s,.]+)+/
+      elsif (match = /^(?<code>\s*(go(sub|to))|go(sub|to))\s*(?<label>\w+)/i
                      .match(@text))
 
-        self << Code.new(match["code"])
-        labels = match["labels"].split(/\s*,/)
-
-        labels.each do |l|
-          l.strip!
-          if l.keyword?            
-            self << Code.new(l)
-            next
-          end
-          self << Reference.new(l)
-          self << Code.new(",") unless l == labels.last
+        self << Code.new(match["code"] + " ")
+        l = match["label"]
+        l.strip!
+        if l.keyword?            
+          self << Code.new(l)
         end
+        self << Reference.new(l)
         @text = match.post_match
 
       elsif (match = /^(?<separator>:+)/.match(@text))
         self << Code.new(":")
         @text = match.post_match
         
-      elsif (match = /^(?<code>[^":]+?(?!then|go(to|sub)))/.match(@text))
-        break if match["code"] =~ /\s*rem\s*/
+      elsif (match = /^(?<code>[^":]+?(?!go(to|sub)))/i.match(@text))
+        break if match["code"] =~ /\s*rem\s*/i
 
         self << Code.new(match["code"])
         @text = match.post_match
@@ -515,7 +510,7 @@ class Parser
       line.escape!
       
       next if line.empty?
-      next if line =~ /^rem/
+      next if line =~ /^rem/i
       next if line =~ /^;/
       
       if line =~ /^!include\s+(.+?)\s+"(.+?)"/

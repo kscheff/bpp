@@ -305,7 +305,7 @@ class Line
 
   attr_accessor :source, :file
   
-  @@number = -1
+  @@number = 9  # starting line -1
 
   attr_reader :number, :text
   

@@ -329,7 +329,7 @@ class Line
 
       if (match = /^["](?<string>[^"]+)["]/.match(@text))
         self << Literal.new(match["string"])
-        @text = match.post_match.strip
+        @text = match.post_match
         
       elsif (match = /^(?<code>then\s*(go(sub|to))|then|go(sub|to))\s*(?<labels>[\w\s,.]+)+/
                      .match(@text))
@@ -346,17 +346,17 @@ class Line
           self << Reference.new(l)
           self << Code.new(",") unless l == labels.last
         end
-        @text = match.post_match.strip
+        @text = match.post_match
 
       elsif (match = /^(?<separator>:+)/.match(@text))
         self << Code.new(":")
-        @text = match.post_match.strip
+        @text = match.post_match
         
       elsif (match = /^(?<code>[^":]+?(?!then|go(to|sub)))/.match(@text))
         break if match["code"] =~ /\s*rem\s*/
 
         self << Code.new(match["code"])
-        @text = match.post_match.strip
+        @text = match.post_match
       end
     end
   end

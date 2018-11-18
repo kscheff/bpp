@@ -512,6 +512,7 @@ class Parser
       next if line.empty?
       next if line =~ /^rem/i
       next if line =~ /^;/
+      next if line =~ /^\/\//  # '//' is a comment in BlueBasic
       
       if line =~ /^!include\s+(.+?)\s+"(.+?)"/
         match = $&

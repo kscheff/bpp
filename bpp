@@ -4,6 +4,32 @@
 require 'pathname'
 require 'optparse'
 
+
+#---------- globals ---------------------------------------------------------
+$start = 10   #line number to start output numbering 
+$step = 1    #step size fore the line numbering
+
+#----------------------------------------------------------------------------
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: bpp [options]"
+
+  opts.on("-lLINE", "--line=LINE", "Lookup line") do |l|
+    options[:line] = l
+  end
+  
+  opts.on("--start N", Integer, "Start with line number N") do |n|
+    $start = n.to_i
+  end
+  
+  opts.on("--step N", Integer, "Line number step size N") do |n|
+    $step = n.to_i
+  end
+      
+end.parse!
+
 #----------------------------------------------------------------------------
 
 def error(line, message)
@@ -305,8 +331,8 @@ class Line
 
   attr_accessor :source, :file
   
-  @@number = 9  # starting line -1
-
+  @@number = $start - $step
+	
   attr_reader :number, :text
   
   def initialize(text, source=0, file="stdin") #FIXME: add source file?
@@ -319,7 +345,7 @@ class Line
 
   def parent=(node)
     super(node)
-    @number = @@number+=1
+    @number = @@number+=$step
   end
   
   def parse
@@ -364,7 +390,7 @@ class Line
   end
   
   def to_s
-    s = "%d " % [number]
+    s = ""
     
     children.each do |child|
       if child.is_a? Reference
@@ -377,7 +403,13 @@ class Line
         s += child.to_s
       end
     end
-    return s
+    
+    if s =~ /^rem/i
+    	# suppress line number for line starting with REM
+    	return s
+    else
+	    return "%d " % [number] + s
+	end
   end
 end
 
@@ -576,15 +608,6 @@ class Preprocessor
     @tree.each(Line) { |line| puts line }
   end
 end
-
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: bpp [options]"
-
-  opts.on("-lLINE", "--line=LINE", "Lookup line") do |l|
-    options[:line] = l
-  end
-end.parse!
 
 pp = Preprocessor.new
 pp.process
